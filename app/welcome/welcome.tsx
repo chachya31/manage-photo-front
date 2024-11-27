@@ -24,6 +24,7 @@ export function Welcome() {
             <p className="leading-6 text-gray-700 dark:text-gray-200 text-center">
               What&apos;s next?
             </p>
+            <p className="text-blue-300 bg-red-600">Hello Vite + React!</p>
             <ul>
               {resources.map(({ href, text, icon }) => (
                 <li key={href}>
