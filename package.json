@@ -15,12 +15,17 @@
     "prepare": "simple-git-hooks > /dev/null"
   },
   "dependencies": {
+    "@conform-to/react": "^1.2.2",
+    "@conform-to/zod": "^1.2.2",
     "@react-router/node": "^7.0.1",
     "@react-router/serve": "^7.0.1",
+    "clsx": "^2.1.1",
     "isbot": "^5.1.17",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router": "^7.0.1"
+    "react-router": "^7.0.1",
+    "react-twc": "^1.4.2",
+    "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.3",

@@ -5,7 +5,9 @@
 import { Form, redirect, type MetaFunction } from "react-router"
 
 import type * as Route from "./+types/signup"
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 
+import { Input } from "~/components/ui/input"
 import { getUserId } from "~/services/session.server"
 import { userSignUp } from "~/services/signup.server"
 
@@ -16,14 +18,14 @@ export const meta: MetaFunction = () => {
   ]
 }
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await getUserId(request)
   if (userId) {
     return redirect("/")
   }
 }
 
-export const action = async ({ request }: Route.ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   let response: Response
   try {
     const formData = await request.formData()
@@ -60,13 +62,12 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
               Email address
             </label>
             <div className="mt-2">
-              <input
+              <Input
                 id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
               />
             </div>
           </div>
@@ -76,14 +77,13 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
               Username
             </label>
             <div className="mt-2">
-              <input
+              <Input
                 id="fullName"
                 name="fullName"
                 type="text"
                 placeholder=""
                 autoComplete="username"
                 required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
               />
             </div>
           </div>
@@ -93,13 +93,12 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
               Phone Number
             </label>
             <div className="mt-2">
-              <input
+              <Input
                 id="phoneNumber"
                 name="phoneNumber"
                 type="tel"
                 placeholder="ハイフン(-)なしで入力してください。"
                 autoComplete="mobile tel"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
               />
             </div>
           </div>
@@ -127,12 +126,11 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
               Password
             </label>
             <div className="mt-2">
-              <input
+              <Input
                 id="password"
                 name="password"
                 type="password"
                 required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
               />
             </div>
           </div>
@@ -142,13 +140,12 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
               Password(Re)
             </label>
             <div className="mt-2">
-              <input
+              <Input
                 id="passwordRe"
                 name="passwordRe"
                 type="password"
                 placeholder=""
                 required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
               />
             </div>
           </div>

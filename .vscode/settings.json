@@ -1,0 +1,21 @@
+{
+  "editor.formatOnType": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.renderWhitespace": "all",
+  "editor.detectIndentation": true,
+  "editor.wordWrap": "on",
+  "files.eol": "\n",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.tslint": "explicit"
+  },
+  "prettier.tslintIntegration": true,
+  "prettier.singleQuote": true,
+  "prettier.jsxSingleQuote": true,
+  "tailwindCSS.experimental.classRegex": [
+    "twc\\.[^`]+`([^`]*)`", 
+    "twc\\([^`]*?\\)`([^`]*)`",
+    ["twc\\.[^`]+\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["twc\\([^`]*?\\).*?\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ]
+}

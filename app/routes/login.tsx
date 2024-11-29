@@ -5,7 +5,9 @@
 import { Form, Link, redirect, type MetaFunction } from "react-router"
 
 import type * as Route from "./+types/login"
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 
+import { Input } from "~/components/ui/input"
 import { createUserSession, getUserId } from "~/services/session.server"
 
 export const meta: MetaFunction = () => {
@@ -15,14 +17,14 @@ export const meta: MetaFunction = () => {
   ]
 }
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await getUserId(request)
   if (userId) {
     return redirect("/")
   }
 }
 
-export const action = async ({ request }: Route.ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   let response: Response
   try {
     const formData = await request.formData()
@@ -75,13 +77,12 @@ export default function Login({ actionData }: Route.ComponentProps) {
               Email address
             </label>
             <div className="mt-2">
-              <input
+              <Input
                 id="email"
                 name="email"
                 type="email"
                 required
                 autoComplete="email"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
               />
             </div>
           </div>
@@ -98,13 +99,12 @@ export default function Login({ actionData }: Route.ComponentProps) {
               </div>
             </div>
             <div className="mt-2">
-              <input
+              <Input
                 id="password"
                 name="password"
                 type="password"
                 required
                 autoComplete="current-password"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6"
               />
             </div>
           </div>
