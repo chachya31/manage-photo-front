@@ -71,15 +71,12 @@ const resendConfirmationCode = (email: string) => async () => {
     const formData = new FormData()
     formData.append("email", email)
     const res = await Apis.postForm("/api/v1/auth/resend_confirmation_code", formData)
-    console.log(res)
 
     if (res.status !== 200) {
       throw new Error(`Login Failed: ${res.data.detail[0].msg}`)
-    } else {
-      console.log("success!")
-      response = redirect("/login")
-      // navigate("/login")
     }
+    response = redirect("/login")
+    // navigate("/login")
   } catch (error) {
     if (error instanceof Error) {
       return { error: error.message }
