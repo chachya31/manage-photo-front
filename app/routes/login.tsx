@@ -8,16 +8,15 @@ import {
   useForm,
 } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod";
-import { Form, Link, redirect, type MetaFunction } from "react-router"
+import { Form, Link, redirect, type MetaFunction, useNavigate } from "react-router"
 import { z } from "zod";
 
 import type * as Route from "./+types/login"
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 
-
 import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Input } from "~/components/ui/input"
-import { createUserSession, getUserId } from "~/services/session.server"
+import { createUserSession, getUserId, createTempUserSession } from "~/services/session.server"
 import { Apis } from "~/utils/apis";
 
 export const meta: MetaFunction = () => {
@@ -47,25 +46,25 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     const formData = await request.formData()
     const email = formData.get("email")?.toString()
-    const password = formData.get("password")?.toString()
     const submission = parseWithZod(formData, { schema });
 
     const res = await Apis.post("/api/v1/auth/signin", submission.payload)
 
     if (res.status !== 200) {
-      console.log(res.status)
       if (res.status === 403) {
-        console.log("verify")
-        return redirect("/verify_account")
+        response = await createTempUserSession({
+          request, userId: email, redirectUrl: "/verify_account"
+        })
+      } else {
+        throw new Error(`Login Failed: ${res.data.detail[0].msg}`)
       }
-      throw new Error(`Login Failed: ${res.data.detail[0].msg}`)
+    } else {
+      response = await createUserSession({
+        request,
+        userId: email,
+        remember: true
+      });
     }
-
-    response = await createUserSession({
-      request,
-      userId: email,
-      remember: true
-    });
 
     if (!response) {
       throw new Error("An error occurred while creating the session")

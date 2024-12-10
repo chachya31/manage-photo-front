@@ -46,16 +46,10 @@ client.interceptors.response.use(response => {
 });
 
 export const Apis = {
-  /**
-   * 
-   * @param path 
-   * @param data 
-   * @param params 
-   * @returns 
-   */
+  // actionからのAPI通信は「aixos.post」を使用
   post: async function (path: string, data: any, params?: any) {
     return await client.post(path, data, {
-      params: params
+      params: params,
     })
       .then((res) => {
         console.log(res)
@@ -64,5 +58,20 @@ export const Apis = {
       .catch((error) => {
         return error.response
       })
-  }
+  },
+  // カスタムメソッドからのAPI通信は「aixos.postForm」を使用
+  postForm: async function (path: string, data: any, params?: any) {
+    return await client.postForm(path, data, {
+      params: params,
+      headers: {'content-type': 'application/json'},
+    })
+      .then((res) => {
+        console.log(res)
+        return res
+      })
+      .catch((error) => {
+        console.log(error.response)
+        return error.response
+      })
+  },
 }

@@ -64,3 +64,34 @@ export const createUserSession = async ({
     }
   })
 }
+
+const TEMP_USER_SESSION_KEY = "tempUser"
+
+export const createTempUserSession = async ({
+  request,
+  userId,
+  redirectUrl,
+}: {
+  request: Request
+  userId: string
+  redirectUrl?: string
+}) => {
+  const session = await getUserSession(request)
+  session.set(TEMP_USER_SESSION_KEY, userId)
+  return redirect(redirectUrl || "/", {
+    headers: {
+      "Set-Cookie": await sessionStorage.commitSession(session, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 30 // 30分
+      })
+    }
+  })
+}
+
+export const getTempUserId = async (request: Request): Promise<User["id"] | undefined> => {
+  const session = await getUserSession(request)
+  const userId = session.get(TEMP_USER_SESSION_KEY)
+  return userId
+}
