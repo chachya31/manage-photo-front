@@ -20,7 +20,7 @@ const flatCompat = new FlatCompat();
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   {
-    ignores: ["dist", "*.config.js", "*.config.ts"], // ESLint のチェック対象外
+    ignores: ["dist", "*.config.js", "*.config.ts", ".react-router"], // ESLint のチェック対象外
   },
   {files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"]},
   {languageOptions: { globals: globals.browser }},

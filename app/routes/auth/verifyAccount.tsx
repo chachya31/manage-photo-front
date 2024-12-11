@@ -13,10 +13,8 @@ import { z } from "zod";
 import type * as Route from "./+types/verifyAccount"
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 
-
-import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Input } from "~/components/ui/input"
-import { createUserSession ,getUserId, getTempUserId } from "~/services/session.server"
+import { createUserSession, getUserId, getTempUserId } from "~/services/session.server"
 import { Apis } from "~/utils/apis";
 
 export const meta: MetaFunction = () => {
@@ -27,9 +25,12 @@ export const meta: MetaFunction = () => {
 }
 
 const schema = z.object({
-  email: z
-    .string({ required_error: "メールアドレスを入力してください。" })
-    .email("メールアドレス形式ではありません。"),
+  email: z.preprocess(
+    (value) => (value === '' ? undefined : value),
+    z
+      .string({ required_error: "メールアドレスを入力してください。" })
+      .email("メールアドレス形式ではありません。"),
+  ),
   confirmation_code: z
     .string({ required_error: "認証コードを入力してください。" }),
 })
@@ -45,46 +46,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   } else {
     return redirect("/login")
   }
-}
-
-const ResendModal = (props: { open: boolean, userId: string }) => {
-  const properties = props
-  return (
-    <dialog className="modal" id="my_modal_1" open={properties.open}>
-      <div className="modal-box">
-        <h3 className="font-bold text-lg">期限切れ！</h3>
-        <p className="py-4">認証コードの有効期限が切れました。</p>
-        <div className="modal-action">
-          <form method="dialog">
-            <button className="btn" onClick={resendConfirmationCode(properties.userId)}>再発行</button>
-          </form>
-        </div>
-      </div>
-    </dialog>
-  )
-}
-
-const resendConfirmationCode = (email: string) => async () => {
-  // const navigate = useNavigate();
-  let response: Response
-  try {
-    const formData = new FormData()
-    formData.append("email", email)
-    const res = await Apis.postForm("/api/v1/auth/resend_confirmation_code", formData)
-
-    if (res.status !== 200) {
-      throw new Error(`Login Failed: ${res.data.detail[0].msg}`)
-    }
-    response = redirect("/login")
-    // navigate("/login")
-  } catch (error) {
-    if (error instanceof Error) {
-      return { error: error.message }
-    }
-
-    return { error: "An unknown error occurred" }
-  }
-  return response
 }
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -117,7 +78,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return response
 }
 
+
 export default function VerifyAccount({ actionData, loaderData }: Route.ComponentProps) {
+  const navigate = useNavigate()
   const [form, fields] = useForm({
     constraint: getZodConstraint(schema),
     shouldValidate: "onBlur",
@@ -125,6 +88,42 @@ export default function VerifyAccount({ actionData, loaderData }: Route.Componen
     onValidate: ({ formData }) => parseWithZod(formData, { schema }),
   })
   const email = loaderData
+  // 認証コード期限切れモーダル
+  const ResendModal = (props: { open: boolean }) => {
+    const properties = props
+    return (
+      <dialog className="modal" id="my_modal_1" open={properties.open}>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">期限切れ！</h3>
+          <p className="py-4">認証コードの有効期限が切れました。</p>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn" onClick={resendConfirmationCode()}>再発行</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+    )
+  }
+  // 認証コード再送信
+  const resendConfirmationCode = () => async () => {
+    try {
+      const formData = new FormData()
+      formData.append("email", email)
+      const res = await Apis.postForm("/api/v1/auth/resend_confirmation_code", formData)
+
+      if (res.status !== 200) {
+        throw new Error(`Login Failed: ${res.data.detail[0].msg}`)
+      }
+      navigate("/login")
+    } catch (error) {
+      if (error instanceof Error) {
+        return { error: error.message }
+      }
+      return { error: "An unknown error occurred" }
+    }
+  }
+  // レンダリング
   return (
     <div className="container mx-auto">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -146,8 +145,9 @@ export default function VerifyAccount({ actionData, loaderData }: Route.Componen
             </label>
             <div className="mt-2">
               <Input
-                {...getInputProps(fields.email, { type: "email"})}
-                readOnly={email? true : false}
+                {...getInputProps(fields.email, { type: "email" })}
+                key={fields.email.key}
+                readOnly={email ? true : false}
                 value={email}
               />
             </div>
@@ -164,12 +164,11 @@ export default function VerifyAccount({ actionData, loaderData }: Route.Componen
             </div>
             <div className="mt-2">
               <Input
-                {...getInputProps(fields.confirmation_code, { type: "text"})}
+                {...getInputProps(fields.confirmation_code, { type: "text" })}
                 autoFocus
-                className={`${
-                  fields.confirmation_code.errors
-                    ? 'outline outline-red-500 focus-visible:ring-red-500'
-                    : ''
+                className={`${fields.confirmation_code.errors
+                  ? 'outline outline-red-500 focus-visible:ring-red-500'
+                  : ''
                   }`}
               />
             </div>
@@ -191,7 +190,7 @@ export default function VerifyAccount({ actionData, loaderData }: Route.Componen
             <button
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               type="button"
-              onClick={resendConfirmationCode(email)}
+              onClick={resendConfirmationCode()}
             >
               テスト
             </button>
@@ -204,7 +203,7 @@ export default function VerifyAccount({ actionData, loaderData }: Route.Componen
           ) : null}
         </Form>
       </div>
-      {(actionData?.modal)  && <ResendModal open={actionData.modal} userId={email} />}
+      {(actionData?.modal) && <ResendModal open={actionData.modal} />}
     </div>
   )
 }
