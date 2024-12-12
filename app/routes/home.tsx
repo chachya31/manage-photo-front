@@ -4,9 +4,10 @@ import { Form, Link, redirect, type MetaFunction } from "react-router"
 
 // import { Welcome } from "../welcome/welcome";
 
-import type { Route } from "./+types/home";
+import type { Route } from "./+types/home"
 
-import { getUserId } from "~/services/session.server";
+import { PAGE_URL } from "~/constants/pageUrl";
+import { getUserId } from "~/services/session.server"
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,7 +19,7 @@ export const meta: MetaFunction = () => {
 export const loader = async ({ request }: Route.LoaderArgs) => {
   const userId = await getUserId(request)
   if (!userId) {
-    throw redirect("/login")
+    throw redirect(PAGE_URL.LOGIN)
   } else {
     return { userId }
   }
@@ -39,7 +40,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
             </Form>
           </div>
         ) : (
-          <Link to="/login">Login</Link>
+          <Link to={PAGE_URL.LOGIN}>Login</Link>
         )}
       </div>
     </div>

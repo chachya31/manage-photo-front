@@ -1,15 +1,27 @@
 /* eslint-disable spellcheck/spell-checker */
-/* eslint-disable react/jsx-sort-props */
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 /* eslint-disable react/function-component-definition */
+import {
+  getFormProps,
+  getInputProps,
+  getSelectProps,
+  useForm,
+} from "@conform-to/react";
+import { getZodConstraint, parseWithZod } from "@conform-to/zod"
+// import { useFormState } from 'react-dom'
 import { Form, redirect, type MetaFunction } from "react-router"
 
 import type * as Route from "./+types/signup"
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 
 import { Input } from "~/components/ui/input"
+import { API_URL } from "~/constants/apiUrl";
+import { PAGE_URL } from "~/constants/pageUrl";
 import { getUserId } from "~/services/session.server"
-import { userSignUp } from "~/services/signup.server"
+import { roles } from "~/state/auth";
+import { createSignUpSchema } from "~/state/auth/signup/schema";
+import { Apis } from "~/utils/apis";
+
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,10 +30,12 @@ export const meta: MetaFunction = () => {
   ]
 }
 
+const schema = createSignUpSchema()
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await getUserId(request)
   if (userId) {
-    return redirect("/")
+    return redirect(PAGE_URL.ROUTE)
   }
 }
 
@@ -29,13 +43,17 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   let response: Response
   try {
     const formData = await request.formData()
-    const email = formData.get("email")?.toString()
+    const submission = await parseWithZod(formData, { schema })
 
-    response = await userSignUp({ email: email,  redirectUrl: "/" })
-
-    if (!response) {
-      throw new Error("An error occurred while creating the session")
+    if (submission.status !== "success") {
+      return submission.reply()
     }
+
+    const res = await Apis.post(API_URL.SIGN_UP, submission.payload)
+    if (res.status !== 200) {
+      throw new Error(`Failed: ${res.data.detail[0].msg}`)
+    }
+    response = redirect(PAGE_URL.LOGIN)
   } catch (error) {
     if (error instanceof Error) {
       return { error: error.message }
@@ -48,6 +66,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 }
 
 export default function SignUp({ actionData }: Route.ComponentProps) {
+  const [form, fields] = useForm({
+    constraint: getZodConstraint(schema),
+    shouldValidate: "onBlur",
+    shouldRevalidate: "onInput",
+    onValidate: ({ formData }) => parseWithZod(formData, { schema }),
+  })
   return (
     <main className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -56,112 +80,127 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
         </h2>
       </div>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <Form method="post" className="space-y-12">
+        <Form className="space-y-12" method="POST" {...getFormProps(form)}>
           <div className="sm:col-span-4">
-            <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="email">
               Email address
             </label>
             <div className="mt-2">
               <Input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
+                {...getInputProps(fields.email, { type: "email" })}
+                key={fields.email.key}
               />
             </div>
+            {fields.email.errors && (
+              <div className="label">
+                <span className="label-text-alt text-error">{fields.email.errors}</span>
+              </div>
+            )}
           </div>
 
           <div className="sm:col-span-4">
-            <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="username">
               Username
             </label>
             <div className="mt-2">
               <Input
-                id="fullName"
-                name="fullName"
-                type="text"
-                placeholder=""
-                autoComplete="username"
-                required
+                {...getInputProps(fields.full_name, { type: "text" })}
+                key={fields.full_name.key}
               />
             </div>
+            {fields.full_name.errors && (
+              <div className="label">
+                <span className="label-text-alt text-error">{fields.full_name.errors}</span>
+              </div>
+            )}
           </div>
 
           <div className="sm:col-span-4">
-            <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="username">
               Phone Number
             </label>
             <div className="mt-2">
               <Input
-                id="phoneNumber"
-                name="phoneNumber"
-                type="tel"
+                {...getInputProps(fields.phone_number, { type: "tel" })}
+                key={fields.phone_number.key}
                 placeholder="ハイフン(-)なしで入力してください。"
-                autoComplete="mobile tel"
               />
             </div>
+            {fields.phone_number.errors && (
+              <div className="label">
+                <span className="label-text-alt text-error">{fields.phone_number.errors}</span>
+              </div>
+            )}
           </div>
 
           <div className="sm:col-span-3">
-            <label htmlFor="role" className="block text-sm/6 font-medium text-gray-900">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="role">
               Role
             </label>
             <div className="mt-2">
               <select
-                id="role"
-                name="role"
-                autoComplete="role"
-                required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6"
+                {...getSelectProps(fields.role)}
+                className={fields.role.errors ? "select select-error w-full max-w-xs" : "select select-bordered w-full max-w-xs"}
+                key={fields.role.key}
               >
-                <option>Admin</option>
-                <option>Customer</option>
+                {roles.map(option => (
+                  <option key={option.id} value={option.id}>{ option.text }</option>
+                ))}
               </select>
             </div>
+            {fields.role.errors && (
+              <div className="label">
+                <span className="label-text-alt text-error">{fields.role.errors}</span>
+              </div>
+            )}
           </div>
 
           <div className="sm:col-span-4">
-            <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="password">
               Password
             </label>
             <div className="mt-2">
               <Input
-                id="password"
-                name="password"
-                type="password"
-                required
+                {...getInputProps(fields.password, { type: "password" })}
+                key={fields.password.key}
               />
             </div>
+            {fields.password.errors && (
+              <div className="label">
+                <span className="label-text-alt text-error">{fields.password.errors}</span>
+              </div>
+            )}
           </div>
 
           <div className="sm:col-span-4">
-            <label htmlFor="passwordRe" className="block text-sm/6 font-medium text-gray-900">
-              Password(Re)
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="passwordRe">
+              PasswordRe
             </label>
             <div className="mt-2">
               <Input
-                id="passwordRe"
-                name="passwordRe"
-                type="password"
-                placeholder=""
-                required
+                {...getInputProps(fields.passwordRe, { type: "password" })}
+                key={fields.passwordRe.key}
               />
             </div>
+            {fields.passwordRe.errors && (
+              <div className="label">
+                <span className="label-text-alt text-error">{fields.passwordRe.errors}</span>
+              </div>
+            )}
           </div>
 
           <div>
             <button
-              type="submit"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              type="submit"
             >
               Sign up
             </button>
           </div>
 
           {actionData?.error ? (
-            <div className="flex flex-row">
-              <p className="text-red-600 mt-4 ">{actionData?.error}</p>
+            <div className="label">
+              <span className="label-text-alt text-error">{actionData?.error}</span>
             </div>
           ) : null}
         </Form>

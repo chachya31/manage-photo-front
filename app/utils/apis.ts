@@ -4,7 +4,7 @@
 import axios from "axios"
 
 const client = axios.create({
-  baseURL: import.meta.env.VITE_API_URL
+  baseURL: import.meta.env.VITE_API_URL + "/api/v1"
 })
 
 client.interceptors.request.use(config => {
@@ -13,7 +13,6 @@ client.interceptors.request.use(config => {
 })
 
 client.interceptors.response.use(response => {
-  console.log("time")
   const endTime = new Date();
   const duration = endTime - response.config.metadata.startTime;
   console.log(`Request took ${duration}ms`);

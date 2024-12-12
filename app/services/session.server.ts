@@ -1,6 +1,8 @@
 /* eslint-disable perfectionist/sort-object-types */
 import { createCookieSessionStorage, redirect } from "react-router"
 
+import { PAGE_URL } from "~/constants/pageUrl";
+
 type User = { id: string; password: string; username: string; }
 
 export const sessionStorage = createCookieSessionStorage({
@@ -23,7 +25,7 @@ const getUserSession = async (request: Request) => {
 
 export const logout = async (request: Request) => {
   const session = await getUserSession(request)
-  return redirect("/", {
+  return redirect(PAGE_URL.ROUTE, {
     headers: {
       "Set-Cookie": await sessionStorage.destroySession(session)
     }
@@ -51,7 +53,7 @@ export const createUserSession = async ({
 }) => {
   const session = await getUserSession(request)
   session.set(USER_SESSION_KEY, userId)
-  return redirect(redirectUrl || "/", {
+  return redirect(redirectUrl || PAGE_URL.ROUTE, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {
         httpOnly: true,
@@ -78,7 +80,7 @@ export const createTempUserSession = async ({
 }) => {
   const session = await getUserSession(request)
   session.set(TEMP_USER_SESSION_KEY, userId)
-  return redirect(redirectUrl || "/", {
+  return redirect(redirectUrl || PAGE_URL.ROUTE, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {
         httpOnly: true,

@@ -5,6 +5,8 @@ import { logout } from "../services/session.server";
 
 import type * as Route from "./+types.logout";
 
+import { PAGE_URL } from "~/constants/pageUrl";
+
 export const meta: MetaFunction = () => {
   return [
     { title: "New React Router App Logout" },
@@ -18,7 +20,7 @@ export const action = async ({ request }: Route.ActionArgs) => {
 
 // eslint-disable-next-line unused-imports/no-unused-vars
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  return redirect("/login")
+  return redirect(PAGE_URL.LOGIN)
 }
 
 
