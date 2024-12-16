@@ -7,11 +7,11 @@ import {
   useForm,
 } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod"
+import { useTranslation } from 'react-i18next';
 import { Form, Link, type MetaFunction } from "react-router"
 
 import type * as Route from "./+types/login"
 
-import { Alert, AlertDescription } from "~/components/ui/alert"
 import { Input } from "~/components/ui/input"
 import { PAGE_URL } from "~/constants/pageUrl";
 import { loginAction } from "~/state/auth/login/action"
@@ -30,6 +30,7 @@ export const loader = loginLoader
 export const action = loginAction
 
 export default function Login({ actionData }: Route.ComponentProps) {
+  const { t } = useTranslation()
   const schema = createLoginSchema()
   const [form, fields] = useForm({
     constraint: getZodConstraint(schema),
@@ -46,7 +47,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
           src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
         />
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-          Sign in to your account
+          {t("loginTitle")}
         </h2>
       </div>
 
@@ -54,7 +55,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
         <Form className="space-y-6" method="post" {...getFormProps(form)}>
           <div>
             <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.email.id}>
-              Email address
+              {t("mailAddress")}
             </label>
             <div className="mt-2">
               <Input
@@ -62,24 +63,26 @@ export default function Login({ actionData }: Route.ComponentProps) {
                 autoComplete="email"
                 className={`${
                   fields.email.errors
-                    ? 'outline outline-red-500 focus-visible:ring-red-500'
+                    ? 'input input-bordered input-error w-full'
                     : ''
                   }`}
               />
             </div>
             {fields.email.errors && (
-              <span>{fields.email.errors}</span>
+              <div className="label">
+                <span className="label-text-alt text-error">{fields.email.errors}</span>
+              </div>
             )}
           </div>
 
           <div>
             <div className="flex items-center justify-between">
               <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.password.id}>
-                Password
+                {t("password")}
               </label>
               <div className="text-sm">
                 <Link className="font-semibold text-indigo-600 hover:text-indigo-500" to={PAGE_URL.FORGOT_PASSWORD}>
-                  Forgot password?
+                  {t("forgotPasswordLinkMessage")}
                 </Link>
               </div>
             </div>
@@ -89,35 +92,31 @@ export default function Login({ actionData }: Route.ComponentProps) {
                 autoComplete="current-password"
                 className={`${
                   fields.password.errors
-                    ? 'outline outline-red-500 focus-visible:ring-red-500'
+                    ? 'input input-bordered input-error w-full'
                     : ''
                   }`}
               />
             </div>
             {fields.password.errors && (
-              <Alert>
-                <AlertDescription>
-                  {fields.password.errors}
-                </AlertDescription>
-              </Alert>
+              <div className="label">
+                <span className="label-text-alt text-error">{fields.password.errors}</span>
+              </div>
             )}
           </div>
 
-          <div>
-            <div className="flex items-center justify-between">
-              <div className="text-sm">
-                <Link to="/signup">Sign up</Link>
-              </div>
-            </div>
-          </div>
-
-          <div>
+          <div className="flex items-center justify-between">
             <button
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="btn btn-primary btn-wide"
               type="submit"
             >
-              Sign in
+              {t("login")}
             </button>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <Link className="font-semibold text-indigo-600 hover:text-indigo-500" to={PAGE_URL.SIGN_UP}>
+              {t("signUpLinkMessage")}
+            </Link>
           </div>
 
           {actionData?.error ? (

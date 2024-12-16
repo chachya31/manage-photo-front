@@ -1,0 +1,12 @@
+{
+  "loginTitle": "ログイン",
+  "login": "ログイン",
+  "mailAddress": "メールアドレス",
+  "signUp": "ユーザ登録",
+  "password": "パスワード",
+  "passwordRe": "パスワード（確認）",
+  "userName": "ユーザ名",
+  "phoneNumber": "電話番号",
+  "signUpLinkMessage": "会員登録するにはこちら",
+  "forgotPasswordLinkMessage": "パスワードを忘れましたか？"
+}

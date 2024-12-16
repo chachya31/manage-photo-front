@@ -82,12 +82,17 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <Form className="space-y-12" method="POST" {...getFormProps(form)}>
           <div className="sm:col-span-4">
-            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="email">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.email.id}>
               Email address
             </label>
             <div className="mt-2">
               <Input
                 {...getInputProps(fields.email, { type: "email" })}
+                className={`${
+                  fields.email.errors
+                    ? 'input input-bordered input-error w-full'
+                    : ''
+                  }`}
                 key={fields.email.key}
               />
             </div>
@@ -99,12 +104,17 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
           </div>
 
           <div className="sm:col-span-4">
-            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="username">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.full_name.id}>
               Username
             </label>
             <div className="mt-2">
               <Input
                 {...getInputProps(fields.full_name, { type: "text" })}
+                className={`${
+                  fields.full_name.errors
+                    ? 'input input-bordered input-error w-full'
+                    : ''
+                  }`}
                 key={fields.full_name.key}
               />
             </div>
@@ -116,12 +126,17 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
           </div>
 
           <div className="sm:col-span-4">
-            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="username">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.phone_number.id}>
               Phone Number
             </label>
             <div className="mt-2">
               <Input
                 {...getInputProps(fields.phone_number, { type: "tel" })}
+                className={`${
+                  fields.phone_number.errors
+                    ? 'input input-bordered input-error w-full'
+                    : ''
+                  }`}
                 key={fields.phone_number.key}
                 placeholder="ハイフン(-)なしで入力してください。"
               />
@@ -134,13 +149,13 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
           </div>
 
           <div className="sm:col-span-3">
-            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="role">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.role.id}>
               Role
             </label>
             <div className="mt-2">
               <select
                 {...getSelectProps(fields.role)}
-                className={fields.role.errors ? "select select-error w-full max-w-xs" : "select select-bordered w-full max-w-xs"}
+                className={fields.role.errors ? "select select-error w-full" : "select select-bordered w-full"}
                 key={fields.role.key}
               >
                 {roles.map(option => (
@@ -156,12 +171,17 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
           </div>
 
           <div className="sm:col-span-4">
-            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="password">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.password.id}>
               Password
             </label>
             <div className="mt-2">
               <Input
                 {...getInputProps(fields.password, { type: "password" })}
+                className={`${
+                  fields.password.errors
+                    ? 'input input-bordered input-error w-full'
+                    : ''
+                  }`}
                 key={fields.password.key}
               />
             </div>
@@ -173,12 +193,17 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
           </div>
 
           <div className="sm:col-span-4">
-            <label className="block text-sm/6 font-medium text-gray-900" htmlFor="passwordRe">
+            <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.passwordRe.id}>
               PasswordRe
             </label>
             <div className="mt-2">
               <Input
                 {...getInputProps(fields.passwordRe, { type: "password" })}
+                className={`${
+                  fields.passwordRe.errors
+                    ? 'input input-bordered input-error w-full'
+                    : ''
+                  }`}
                 key={fields.passwordRe.key}
               />
             </div>
@@ -191,10 +216,10 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
 
           <div>
             <button
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="btn btn-primary"
               type="submit"
             >
-              Sign up
+              登録
             </button>
           </div>
 

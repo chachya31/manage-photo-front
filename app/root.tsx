@@ -1,3 +1,6 @@
+/* eslint-disable react/jsx-sort-props */
+/* eslint-disable react/function-component-definition */
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import {
   isRouteErrorResponse,
   Links,
@@ -6,6 +9,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import './i18n'
 
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
