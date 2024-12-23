@@ -51,7 +51,7 @@ export const Apis = {
       params: params,
     })
       .then((res) => {
-        console.log(res)
+        console.log(res.data)
         return res
       })
       .catch((error) => {
@@ -65,7 +65,7 @@ export const Apis = {
       headers: {'content-type': 'application/json'},
     })
       .then((res) => {
-        console.log(res)
+        console.log(res.data)
         return res
       })
       .catch((error) => {

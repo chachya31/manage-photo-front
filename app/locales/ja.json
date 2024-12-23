@@ -1,12 +1,28 @@
 {
-  "loginTitle": "ログイン",
-  "login": "ログイン",
-  "mailAddress": "メールアドレス",
-  "signUp": "ユーザ登録",
-  "password": "パスワード",
-  "passwordRe": "パスワード（確認）",
-  "userName": "ユーザ名",
-  "phoneNumber": "電話番号",
-  "signUpLinkMessage": "会員登録するにはこちら",
-  "forgotPasswordLinkMessage": "パスワードを忘れましたか？"
+  "pageTitle": {
+    "login": "ログイン",
+    "signUp": "ユーザ登録",
+    "mailAddress": "メールアドレス",
+    "passwordReset": "パスワード再入力"
+  },
+  "message": {
+    "required": "{0}を入力してください。"
+  },
+  "content": {
+    "confirmationCode": "認証コード",
+    "forgotPasswordLink": "パスワードを忘れましたか？",
+    "loginBtn": "ログイン",
+    "loginLink": "ログインへ",
+    "mailAddress": "メールアドレス",
+    "password": "パスワード",
+    "passwordRe": "パスワード（確認）",
+    "passwordResetBtn": "パスワードリセット申請",
+    "passwordResetMessage": "パスワード再入力申請を行います。",
+    "phoneNumber": "電話番号",
+    "processing": "処理中",
+    "role": "権限",
+    "signUpBtn": "ユーザ登録",
+    "signUpLink": "ユーザ登録するにはこちら",
+    "userName": "ユーザ名"
+  }
 }

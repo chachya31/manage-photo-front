@@ -7,16 +7,16 @@ import {
   useForm,
 } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod"
-import { Form, redirect, type MetaFunction, useNavigate } from "react-router"
+import { Form, type MetaFunction, useNavigate } from "react-router"
 import { z } from "zod";
 
 import type * as Route from "./+types/verifyAccount"
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import type { ActionFunctionArgs } from "react-router";
 
 import { Input } from "~/components/ui/input"
-import { API_URL } from "~/constants/apiUrl";
-import { PAGE_URL } from "~/constants/pageUrl";
-import { createUserSession, getUserId, getTempUserId } from "~/services/session.server"
+import { API_URL } from "~/constants/apiUrl"
+import { createUserSession } from "~/services/session.server"
+import { tempLoginCheckLoader } from "~/state/common/commonLoader"
 import { Apis } from "~/utils/apis";
 
 export const meta: MetaFunction = () => {
@@ -37,19 +37,7 @@ const schema = z.object({
     .string({ required_error: "認証コードを入力してください。" }),
 })
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let userId = await getUserId(request)
-  if (userId) {
-    return redirect(PAGE_URL.ROUTE)
-  }
-  userId = await getTempUserId(request)
-  if (userId) {
-    return userId
-  } else {
-    return redirect(PAGE_URL.LOGIN)
-  }
-}
-
+export const loader = tempLoginCheckLoader
 export const action = async ({ request }: ActionFunctionArgs) => {
   let response: Response
   try {
@@ -89,7 +77,7 @@ export default function VerifyAccount({ actionData, loaderData }: Route.Componen
     shouldRevalidate: "onInput",
     onValidate: ({ formData }) => parseWithZod(formData, { schema }),
   })
-  const email = loaderData
+  const email = loaderData.email
   // 認証コード期限切れモーダル
   const ResendModal = (props: { open: boolean }) => {
     const properties = props

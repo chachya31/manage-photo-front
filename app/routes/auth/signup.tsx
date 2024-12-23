@@ -8,20 +8,17 @@ import {
   useForm,
 } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod"
-// import { useFormState } from 'react-dom'
-import { Form, redirect, type MetaFunction } from "react-router"
+import { useTranslation } from 'react-i18next'
+import { Form, Link, useNavigation, type MetaFunction } from "react-router"
 
 import type * as Route from "./+types/signup"
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 
 import { Input } from "~/components/ui/input"
-import { API_URL } from "~/constants/apiUrl";
-import { PAGE_URL } from "~/constants/pageUrl";
-import { getUserId } from "~/services/session.server"
+import { PAGE_URL } from "~/constants/pageUrl"
 import { roles } from "~/state/auth";
-import { createSignUpSchema } from "~/state/auth/signup/schema";
-import { Apis } from "~/utils/apis";
-
+import { signUpAction } from "~/state/auth/signup/action"
+import { createSignUpSchema } from "~/state/auth/signup/schema"
+import { loginCheckLoader } from "~/state/common/commonLoader"
 
 export const meta: MetaFunction = () => {
   return [
@@ -32,58 +29,35 @@ export const meta: MetaFunction = () => {
 
 const schema = createSignUpSchema()
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const userId = await getUserId(request)
-  if (userId) {
-    return redirect(PAGE_URL.ROUTE)
-  }
-}
+export const loader = loginCheckLoader
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  let response: Response
-  try {
-    const formData = await request.formData()
-    const submission = await parseWithZod(formData, { schema })
-
-    if (submission.status !== "success") {
-      return submission.reply()
-    }
-
-    const res = await Apis.post(API_URL.SIGN_UP, submission.payload)
-    if (res.status !== 200) {
-      throw new Error(`Failed: ${res.data.detail[0].msg}`)
-    }
-    response = redirect(PAGE_URL.LOGIN)
-  } catch (error) {
-    if (error instanceof Error) {
-      return { error: error.message }
-    }
-
-    return { error: "An unknown error occurred" }
-  }
-
-  throw response
-}
+export const action = signUpAction
 
 export default function SignUp({ actionData }: Route.ComponentProps) {
+  const { t } = useTranslation()
+  const navigation = useNavigation()
   const [form, fields] = useForm({
     constraint: getZodConstraint(schema),
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
     onValidate: ({ formData }) => parseWithZod(formData, { schema }),
   })
+
+  const isSubmitting = () => {
+    return navigation.formAction === PAGE_URL.SIGN_UP
+  }
   return (
     <main className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-          Input your mail address
+          {t("pageTitle.signUp")}
         </h2>
       </div>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <Form className="space-y-12" method="POST" {...getFormProps(form)}>
           <div className="sm:col-span-4">
             <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.email.id}>
-              Email address
+              {t("content.mailAddress")}
             </label>
             <div className="mt-2">
               <Input
@@ -105,7 +79,7 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
 
           <div className="sm:col-span-4">
             <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.full_name.id}>
-              Username
+              {t("content.userName")}
             </label>
             <div className="mt-2">
               <Input
@@ -127,7 +101,7 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
 
           <div className="sm:col-span-4">
             <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.phone_number.id}>
-              Phone Number
+              {t("content.phoneNumber")}
             </label>
             <div className="mt-2">
               <Input
@@ -150,7 +124,7 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
 
           <div className="sm:col-span-3">
             <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.role.id}>
-              Role
+              {t("content.role")}
             </label>
             <div className="mt-2">
               <select
@@ -172,7 +146,7 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
 
           <div className="sm:col-span-4">
             <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.password.id}>
-              Password
+              {t("content.password")}
             </label>
             <div className="mt-2">
               <Input
@@ -194,7 +168,7 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
 
           <div className="sm:col-span-4">
             <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.passwordRe.id}>
-              PasswordRe
+              {t("content.passwordRe")}
             </label>
             <div className="mt-2">
               <Input
@@ -214,13 +188,19 @@ export default function SignUp({ actionData }: Route.ComponentProps) {
             )}
           </div>
 
-          <div>
+          <div className="flex items-center justify-between">
             <button
-              className="btn btn-primary"
+              className="btn btn-primary btn-wide"
+              disabled={isSubmitting()}
               type="submit"
             >
-              登録
+              {isSubmitting() ? (<span className="loading loading-spinner" />) : null}
+              {isSubmitting() ? t("content.processing") : t("content.signUpBtn")}
             </button>
+
+            <Link className="font-semibold text-indigo-600 hover:text-indigo-500" to={PAGE_URL.LOGIN}>
+              <button className="btn btn-outline" type="button">{t("content.loginLink")}</button>
+            </Link>
           </div>
 
           {actionData?.error ? (

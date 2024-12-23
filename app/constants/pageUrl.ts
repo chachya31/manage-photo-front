@@ -6,4 +6,5 @@ export enum PAGE_URL {
   SIGN_UP = "/signup",
   VERIFY_ACCOUNT = "/verify_account",
   FORGOT_PASSWORD = "/forgot_password",
+  CONFIRM_FORGOT_PASSWORD = "/confirm_forgot_password"
 }

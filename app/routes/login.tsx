@@ -7,16 +7,17 @@ import {
   useForm,
 } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod"
-import { useTranslation } from 'react-i18next';
-import { Form, Link, type MetaFunction } from "react-router"
+import { useTranslation } from 'react-i18next'
+import { Form, Link, useNavigation, type MetaFunction } from "react-router"
 
 import type * as Route from "./+types/login"
 
 import { Input } from "~/components/ui/input"
-import { PAGE_URL } from "~/constants/pageUrl";
+import { PAGE_URL } from "~/constants/pageUrl"
 import { loginAction } from "~/state/auth/login/action"
-import { loginLoader } from "~/state/auth/login/loader"
-import { createLoginSchema } from "~/state/auth/login/schema";
+import { createLoginSchema } from "~/state/auth/login/schema"
+import { loginCheckLoader } from "~/state/common/commonLoader"
+
 
 export const meta: MetaFunction = () => {
   return [
@@ -25,12 +26,12 @@ export const meta: MetaFunction = () => {
   ]
 }
 
-export const loader = loginLoader
-
+export const loader = loginCheckLoader
 export const action = loginAction
 
 export default function Login({ actionData }: Route.ComponentProps) {
   const { t } = useTranslation()
+  const navigation = useNavigation()
   const schema = createLoginSchema()
   const [form, fields] = useForm({
     constraint: getZodConstraint(schema),
@@ -38,6 +39,10 @@ export default function Login({ actionData }: Route.ComponentProps) {
     shouldRevalidate: "onInput",
     onValidate: ({ formData }) => parseWithZod(formData, { schema }),
   })
+
+  const isSubmitting = () => {
+    return navigation.formAction === PAGE_URL.LOGIN
+  }
   return (
     <div className="container mx-auto">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -47,7 +52,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
           src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
         />
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-          {t("loginTitle")}
+          {t("pageTitle.login")}
         </h2>
       </div>
 
@@ -55,7 +60,7 @@ export default function Login({ actionData }: Route.ComponentProps) {
         <Form className="space-y-6" method="post" {...getFormProps(form)}>
           <div>
             <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.email.id}>
-              {t("mailAddress")}
+              {t("content.mailAddress")}
             </label>
             <div className="mt-2">
               <Input
@@ -78,11 +83,11 @@ export default function Login({ actionData }: Route.ComponentProps) {
           <div>
             <div className="flex items-center justify-between">
               <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.password.id}>
-                {t("password")}
+                {t("content.password")}
               </label>
               <div className="text-sm">
                 <Link className="font-semibold text-indigo-600 hover:text-indigo-500" to={PAGE_URL.FORGOT_PASSWORD}>
-                  {t("forgotPasswordLinkMessage")}
+                  {t("content.forgotPasswordLink")}
                 </Link>
               </div>
             </div>
@@ -104,18 +109,20 @@ export default function Login({ actionData }: Route.ComponentProps) {
             )}
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center">
             <button
               className="btn btn-primary btn-wide"
+              disabled={isSubmitting()}
               type="submit"
             >
-              {t("login")}
+              {isSubmitting() ? (<span className="loading loading-spinner" />) : null}
+              {isSubmitting() ? t("content.processing") : t("content.loginBtn")}
             </button>
           </div>
 
           <div className="flex items-center justify-between">
             <Link className="font-semibold text-indigo-600 hover:text-indigo-500" to={PAGE_URL.SIGN_UP}>
-              {t("signUpLinkMessage")}
+              {t("content.signUpLink")}
             </Link>
           </div>
 

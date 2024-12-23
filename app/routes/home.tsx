@@ -1,13 +1,13 @@
 /* eslint-disable react/function-component-definition */
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
-import { Form, Link, redirect, type MetaFunction } from "react-router"
+import { ActionFunctionArgs, Form, Link, redirect, type MetaFunction } from "react-router"
 
 // import { Welcome } from "../welcome/welcome";
 
 import type { Route } from "./+types/home"
 
 import { PAGE_URL } from "~/constants/pageUrl";
-import { getUserId } from "~/services/session.server"
+import { getUserId, logout } from "~/services/session.server"
 
 export const meta: MetaFunction = () => {
   return [
@@ -23,6 +23,12 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   } else {
     return { userId }
   }
+}
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  console.log("action!")
+  const response = logout(request)
+  throw response
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {
@@ -47,6 +53,3 @@ export default function Index({ loaderData }: Route.ComponentProps) {
   )
 }
 
-// export default function Home({ loaderData }: Route.ComponentProps) {
-//   return <Welcome message={ loaderData.message } />;
-// }
