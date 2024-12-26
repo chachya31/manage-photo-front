@@ -2,13 +2,13 @@
 import { parseWithZod } from "@conform-to/zod"
 import { redirect } from "react-router"
 
-import { createSignUpSchema } from "./schema";
+import { createSignUpSchema } from "./schema"
 
-import type { ActionFunctionArgs } from "react-router";
+import type { ActionFunctionArgs } from "react-router"
 
-import { API_URL } from "~/constants/apiUrl";
-import { PAGE_URL } from "~/constants/pageUrl";
-import { Apis } from "~/utils/apis";
+import { API_URL } from "~/constants/apiUrl"
+import { PAGE_URL } from "~/constants/pageUrl"
+import { Apis } from "~/utils/apis"
 
 
 export const signUpAction = async ({ request }: ActionFunctionArgs) => {
@@ -23,7 +23,7 @@ export const signUpAction = async ({ request }: ActionFunctionArgs) => {
     }
 
     const res = await Apis.post(API_URL.SIGN_UP, submission.payload)
-    if (res.status !== 200) {
+    if (res.status !== 201) {
       throw new Error(`Failed: ${res.data.detail[0].msg}`)
     }
     response = redirect(PAGE_URL.LOGIN)

@@ -17,6 +17,7 @@ import { PAGE_URL } from "~/constants/pageUrl"
 import { loginAction } from "~/state/auth/login/action"
 import { createLoginSchema } from "~/state/auth/login/schema"
 import { loginCheckLoader } from "~/state/common/commonLoader"
+import { Alert, AlertDescription } from "~/components/ui/alert"
 
 
 export const meta: MetaFunction = () => {
@@ -54,6 +55,26 @@ export default function Login({ actionData }: Route.ComponentProps) {
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
           {t("pageTitle.login")}
         </h2>
+        <Alert>
+          <AlertDescription className="flex flex-row items-center gap-2 justify-between">
+            <span>test</span>
+            <button className="btn btn-circle btn-ghost btn-xs">
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M6 18L18 6M6 6l12 12"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+              </svg>
+            </button>
+          </AlertDescription>
+        </Alert>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

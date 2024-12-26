@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
-import { Role } from '..';
+import { Role } from '..'
 
 export const createSignUpSchema = () => {
   return z

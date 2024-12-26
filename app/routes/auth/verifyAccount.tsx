@@ -7,17 +7,19 @@ import {
   useForm,
 } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod"
-import { Form, type MetaFunction, useNavigate } from "react-router"
-import { z } from "zod";
+import { useTranslation } from 'react-i18next'
+import { Form, type MetaFunction, useNavigate, useNavigation } from "react-router"
 
 import type * as Route from "./+types/verifyAccount"
-import type { ActionFunctionArgs } from "react-router";
 
 import { Input } from "~/components/ui/input"
 import { API_URL } from "~/constants/apiUrl"
-import { createUserSession } from "~/services/session.server"
+import { PAGE_URL } from "~/constants/pageUrl"
+import { verifyAccountAction } from "~/state/auth/verifyAccount/action"
+import { createVerifyAccountSchema } from "~/state/auth/verifyAccount/schema"
 import { tempLoginCheckLoader } from "~/state/common/commonLoader"
-import { Apis } from "~/utils/apis";
+import { Apis } from "~/utils/apis"
+
 
 export const meta: MetaFunction = () => {
   return [
@@ -26,50 +28,15 @@ export const meta: MetaFunction = () => {
   ]
 }
 
-const schema = z.object({
-  email: z.preprocess(
-    (value) => (value === '' ? undefined : value),
-    z
-      .string({ required_error: "メールアドレスを入力してください。" })
-      .email("メールアドレス形式ではありません。"),
-  ),
-  confirmation_code: z
-    .string({ required_error: "認証コードを入力してください。" }),
-})
+const schema = createVerifyAccountSchema()
 
 export const loader = tempLoginCheckLoader
-export const action = async ({ request }: ActionFunctionArgs) => {
-  let response: Response
-  try {
-    const formData = await request.formData()
-    const submission = parseWithZod(formData, { schema });
-    const res = await Apis.post(API_URL.VERIFY_ACCOUNT, submission.payload)
-
-    if (res.status !== 200) {
-      if (res.status === 403) {
-        return { modal: true }
-      } else {
-        throw new Error(`Login Failed: ${res.data.detail[0].msg}`)
-      }
-    } else {
-      response = await createUserSession({
-        request,
-        userId: email,
-        remember: true
-      });
-    }
-  } catch (error) {
-    if (error instanceof Error) {
-      return { error: error.message }
-    }
-
-    return { error: "An unknown error occurred" }
-  }
-  return response
-}
+export const action = verifyAccountAction
 
 
 export default function VerifyAccount({ actionData, loaderData }: Route.ComponentProps) {
+  const { t } = useTranslation()
+  const navigation = useNavigation()
   const navigate = useNavigate()
   const [form, fields] = useForm({
     constraint: getZodConstraint(schema),
@@ -77,6 +44,9 @@ export default function VerifyAccount({ actionData, loaderData }: Route.Componen
     shouldRevalidate: "onInput",
     onValidate: ({ formData }) => parseWithZod(formData, { schema }),
   })
+  const isSubmitting = () => {
+    return navigation.formAction === PAGE_URL.VERIFY_ACCOUNT
+  }
   const email = loaderData.email
   // 認証コード期限切れモーダル
   const ResendModal = (props: { open: boolean }) => {
@@ -123,7 +93,7 @@ export default function VerifyAccount({ actionData, loaderData }: Route.Componen
           src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
         />
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-          Verify your account
+          {t("pageTitle.verifyAccount")}
         </h2>
       </div>
 
@@ -131,7 +101,7 @@ export default function VerifyAccount({ actionData, loaderData }: Route.Componen
         <Form className="space-y-6" method="post" {...getFormProps(form)}>
           <div>
             <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.email.id}>
-              Email address
+              {t("content.mailAddress")}
             </label>
             <div className="mt-2">
               <Input
@@ -142,14 +112,16 @@ export default function VerifyAccount({ actionData, loaderData }: Route.Componen
               />
             </div>
             {fields.email.errors && (
-              <span>{fields.email.errors}</span>
+              <div className="label">
+                <span className="label-text-alt text-error">{fields.email.errors}</span>
+              </div>
             )}
           </div>
 
           <div>
             <div className="flex items-center justify-between">
               <label className="block text-sm/6 font-medium text-gray-900" htmlFor={fields.confirmation_code.id}>
-                認証キー
+                {t("content.confirmationCode")}
               </label>
             </div>
             <div className="mt-2">
@@ -162,26 +134,20 @@ export default function VerifyAccount({ actionData, loaderData }: Route.Componen
               />
             </div>
             {fields.confirmation_code.errors && (
-              <span>{fields.confirmation_code.errors}</span>
+              <div className="label">
+                <span className="label-text-alt text-error">{fields.confirmation_code.errors}</span>
+              </div>
             )}
           </div>
 
-          <div>
+          <div className="flex items-center justify-center">
             <button
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="btn btn-primary btn-wide"
+              disabled={isSubmitting()}
               type="submit"
             >
-              認証コードを送信
-            </button>
-          </div>
-
-          <div>
-            <button
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={resendConfirmationCode()}
-              type="button"
-            >
-              テスト
+              {isSubmitting() ? (<span className="loading loading-spinner" />) : null}
+              {isSubmitting() ? t("content.processing") : t("content.verifyAccountBtn")}
             </button>
           </div>
 

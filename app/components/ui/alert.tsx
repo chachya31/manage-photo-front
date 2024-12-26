@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/heading-has-content */
 import * as React from 'react'
 
 
@@ -12,22 +13,21 @@ const Alert = React.forwardRef<
     ref={ref}
     role="alert"
     {...props}
-  >
-    <svg
-      className="h-6 w-6 shrink-0 stroke-current"
-      fill="none"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2" />
-    </svg>
-  </div>
+  />
 ))
 Alert.displayName = 'Alert'
 
+const AlertTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h5
+    className={cn('mb-1 font-medium leading-none tracking-tight', className)}
+    ref={ref}
+    {...props}
+  />
+))
+AlertTitle.displayName = 'AlertTitle'
 
 const AlertDescription = React.forwardRef<
   HTMLParagraphElement,
@@ -42,4 +42,4 @@ const AlertDescription = React.forwardRef<
 AlertDescription.displayName = 'AlertDescription'
   
 
-export { Alert, AlertDescription }
+export { Alert, AlertDescription, AlertTitle }
