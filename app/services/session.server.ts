@@ -3,7 +3,7 @@ import { createCookieSessionStorage, redirect } from "react-router"
 
 import { PAGE_URL } from "~/constants/pageUrl";
 
-type User = { id: string; password: string; username: string; }
+type User = { id: string; password: string; username: string; accessToken: string; }
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -33,6 +33,7 @@ export const logout = async (request: Request) => {
 }
 
 const USER_SESSION_KEY = "userId"
+const USER_ACCESS_KEY = "AccessToken"
 
 export const getUserId = async (request: Request): Promise<User["id"] | undefined> => {
   const session = await getUserSession(request)
@@ -40,19 +41,28 @@ export const getUserId = async (request: Request): Promise<User["id"] | undefine
   return userId
 }
 
+export const getAccessToken = async (request: Request): Promise<User["accessToken"] | undefined> => {
+  const session = await getUserSession(request)
+  const accessToken = session.get(USER_ACCESS_KEY)
+  return accessToken
+}
+
 export const createUserSession = async ({
   request,
   userId,
+  accessToken,
   remember = true,
   redirectUrl,
 }: {
   request: Request
   userId: string
+  accessToken: string
   remember: boolean
   redirectUrl?: string
 }) => {
   const session = await getUserSession(request)
   session.set(USER_SESSION_KEY, userId)
+  session.set(USER_ACCESS_KEY, accessToken)
   return redirect(redirectUrl || PAGE_URL.ROUTE, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {

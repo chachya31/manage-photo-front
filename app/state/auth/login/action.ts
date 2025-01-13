@@ -16,6 +16,7 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
     const submission = parseWithZod(formData, { schema });
 
     const res = await Apis.post(API_URL.LOGIN, submission.payload)
+    const accessToken = res.data.AccessToken
 
     if (res.status !== 200) {
       if (res.status === 403) {
@@ -29,6 +30,7 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
       response = await createUserSession({
         request,
         userId: submission.payload.email.toString(),
+        accessToken,
         remember: true
       });
     }
