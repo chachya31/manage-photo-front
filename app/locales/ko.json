@@ -3,8 +3,8 @@
     "login": "로그인",
     "signUp": "회원등록",
     "mailAddress": "メールアドレス",
-    "passwordReset": "비밀번호 재등록록",
-    "verifyAccount": "계정 인증증"
+    "passwordReset": "비밀번호 재등록",
+    "verifyAccount": "계정 인증"
   },
   "message": {
     "required": "{0}を入力してください。"
@@ -21,8 +21,8 @@
     "passwordResetMessage": "비밀번호 재등록 신청합니다.",
     "phoneNumber": "전화번호",
     "processing": "처리중",
-    "role": "권한한",
-    "signUpBtn": "회원가입입",
+    "role": "권한",
+    "signUpBtn": "회원가입",
     "signUpLink": "회원가입",
     "userName": "이름",
     "verifyAccountBtn": "인증 코드를 전송"
