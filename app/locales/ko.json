@@ -1,12 +1,30 @@
 {
-  "loginTitle": "ログイン",
-  "login": "ログイン",
-  "mailAddress": "メールアドレス",
-  "signUp": "ユーザ登録",
-  "password": "パスワード",
-  "passwordRe": "パスワード（確認）",
-  "userName": "ユーザ名",
-  "phoneNumber": "電話番号",
-  "signUpLinkMessage": "会員登録するにはこちら",
-  "forgotPasswordLinkMessage": "パスワードを忘れましたか？"
+  "pageTitle": {
+    "login": "로그인",
+    "signUp": "회원등록",
+    "mailAddress": "メールアドレス",
+    "passwordReset": "비밀번호 재등록록",
+    "verifyAccount": "계정 인증증"
+  },
+  "message": {
+    "required": "{0}を入力してください。"
+  },
+  "content": {
+    "confirmationCode": "인증 코드드",
+    "forgotPasswordLink": "비밀번호 찾기",
+    "loginBtn": "로그인",
+    "loginLink": "로그인 화면으로로",
+    "mailAddress": "메일 주소",
+    "password": "비밀번호",
+    "passwordRe": "비밀번호(확인)",
+    "passwordResetBtn": "비밀번호 재등록 신청",
+    "passwordResetMessage": "비밀번호 재등록 신청합니다.",
+    "phoneNumber": "전화번호",
+    "processing": "처리중",
+    "role": "권한한",
+    "signUpBtn": "회원가입입",
+    "signUpLink": "회원가입",
+    "userName": "이름",
+    "verifyAccountBtn": "인증 코드를 전송"
+  }
 }
