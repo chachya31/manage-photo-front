@@ -1,5 +1,7 @@
 export interface User {
+  "custom:role": string,
   email: string,
+  email_verified: boolean,
   name: string,
   password: string,
   phone_number: string,

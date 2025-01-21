@@ -7,6 +7,7 @@ import { Form, LoaderFunctionArgs } from 'react-router'
 import { Route } from './+types/userList'
 
 import { getUserId } from '~/services/session.server'
+import { User } from '~/state/auth'
 import { Apis } from '~/utils/apis'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -21,8 +22,8 @@ export default function UserList({ loaderData }: Route.ComponentProps) {
   return (
     <div>
       <Form method="get" role="search">
-        <button className="btn btn-outline" type="submit">
-          検索
+        <button className="btn btn-sm btn-outline" type="submit">
+          ユーザ一覧取得
         </button>
       </Form>
       {userList ? (
@@ -37,7 +38,7 @@ export default function UserList({ loaderData }: Route.ComponentProps) {
             </tr>
           </thead>
           <tbody>
-            {userList.map((user) => (
+            {userList.map((user: User) => (
               <tr
                 className={user.email === userId ? 'bg-base-200' : ''}
                 key={user.email}

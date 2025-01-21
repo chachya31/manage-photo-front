@@ -46,19 +46,28 @@ export default function Index({ loaderData }: Route.ComponentProps) {
             <p className="mb-2">・ {user.name}</p>
             <p className="mb-2">・ {user.phone_number}</p>
             <p className="mb-2">・ {user['custom:role']}</p>
-            <Form action={PAGE_URL.LOGOUT} method="post">
-              <button className="border rounded px-2.5 py-1" type="submit">
-                {t('content.logoutBtn')}
+            <div className="mb-4 flex justify-normal">
+              <Form action={PAGE_URL.LOGOUT} method="post">
+                <button className="btn btn-primary btn-sm" type="submit">
+                  {t('content.logoutBtn')}
+                </button>
+              </Form>
+              <button
+                className="btn btn-info btn-sm btn-outline"
+                onClick={getJwt()}
+                type="button"
+              >
+                토큰 확인
               </button>
-            </Form>
-            <button className="btn" onClick={getJwt()} type="button">
-              토큰 확인
-            </button>
-            <Form action={PAGE_URL.REFRESH_TOKEN} method="post">
-              <button className="border rounded px-2.5 py-1" type="submit">
-                {t('content.refreshTokenBtn')}
-              </button>
-            </Form>
+              <Form action={PAGE_URL.REFRESH_TOKEN} method="post">
+                <button
+                  className="btn btn-accent btn-sm btn-outline"
+                  type="submit"
+                >
+                  {t('content.refreshTokenBtn')}
+                </button>
+              </Form>
+            </div>
             <Outlet />
           </div>
         ) : (
