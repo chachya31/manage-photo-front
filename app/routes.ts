@@ -8,5 +8,6 @@ export default [
   route("/confirm_forgot_password", "routes/auth/confirmForgotPassword.tsx"),
   route("/logout", "routes/logout.tsx"),
   route("/signup", "routes/auth/signup.tsx"),
-  route("/verify_account", "routes/auth/verifyAccount.tsx")
+  route("/verify_account", "routes/auth/verifyAccount.tsx"),
+  route("/refresh_token", "routes/auth/refreshToken.tsx")
 ] satisfies RouteConfig;

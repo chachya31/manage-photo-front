@@ -1,12 +1,12 @@
 
 import { parseWithZod } from "@conform-to/zod"
+import { redirect, type ActionFunctionArgs } from "react-router"
 
 import { createVerifyAccountSchema } from "./schema"
 
-import type { ActionFunctionArgs } from "react-router"
 
 import { API_URL } from "~/constants/apiUrl"
-import { createUserSession } from "~/services/session.server"
+import { PAGE_URL } from "~/constants/pageUrl"
 import { Apis } from "~/utils/apis"
 
 export const verifyAccountAction = async ({ request }: ActionFunctionArgs) => {
@@ -16,7 +16,6 @@ export const verifyAccountAction = async ({ request }: ActionFunctionArgs) => {
     const formData = await request.formData()
     const submission = parseWithZod(formData, { schema });
     const res = await Apis.post(API_URL.VERIFY_ACCOUNT, submission.payload)
-    const email = submission.payload.email.toString()
 
     if (res.status !== 200) {
       if (res.status === 403) {
@@ -24,13 +23,8 @@ export const verifyAccountAction = async ({ request }: ActionFunctionArgs) => {
       } else {
         throw new Error(`Login Failed: ${res.data.detail[0].msg}`)
       }
-    } else {
-      response = await createUserSession({
-        request,
-        userId: email,
-        remember: true
-      })
     }
+    response = redirect(PAGE_URL.LOGIN)
   } catch (error) {
     if (error instanceof Error) {
       return { error: error.message }

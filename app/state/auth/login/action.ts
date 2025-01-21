@@ -17,6 +17,7 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
 
     const res = await Apis.post(API_URL.LOGIN, submission.payload)
     const accessToken = res.data.AccessToken
+    const refreshToken = res.data.RefreshToken
 
     if (res.status !== 200) {
       if (res.status === 403) {
@@ -31,6 +32,7 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
         request,
         userId: submission.payload.email.toString(),
         accessToken,
+        refreshToken,
         remember: true
       });
     }

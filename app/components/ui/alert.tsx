@@ -1,19 +1,13 @@
 /* eslint-disable jsx-a11y/heading-has-content */
 import * as React from 'react'
 
-
 import { cn } from '~/libs/utils'
 
 const Alert = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div
-    className={cn("alert alert-error", className)}
-    ref={ref}
-    role="alert"
-    {...props}
-  />
+  <div className={cn('alert', className)} ref={ref} role="alert" {...props} />
 ))
 Alert.displayName = 'Alert'
 
@@ -40,6 +34,5 @@ const AlertDescription = React.forwardRef<
   />
 ))
 AlertDescription.displayName = 'AlertDescription'
-  
 
 export { Alert, AlertDescription, AlertTitle }

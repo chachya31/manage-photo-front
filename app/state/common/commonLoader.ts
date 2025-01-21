@@ -1,12 +1,16 @@
 import { LoaderFunctionArgs, redirect } from "react-router"
 
 import { PAGE_URL } from "~/constants/pageUrl"
-import { getTempUserId, getUserId } from "~/services/session.server"
+import { flashMessage, getTempUserId, getUserId } from "~/services/session.server"
 
 export const loginCheckLoader = async ({ request }: LoaderFunctionArgs) => {
+  const { data: flashMessageData, cookie } = await flashMessage.get({ request })
   const userId = await getUserId(request)
   if (userId) {
     return redirect(PAGE_URL.ROUTE)
+  }
+  if (flashMessageData) {
+    return { flashMessage: flashMessageData }
   }
 }
 
