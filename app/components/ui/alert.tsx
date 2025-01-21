@@ -7,7 +7,13 @@ const Alert = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div className={cn('alert', className)} ref={ref} role="alert" {...props} />
+  <div
+    className={cn('alert', className)}
+    ref={ref}
+    role="alert"
+    {...props}
+    style={{ padding: '0.5rem' }}
+  />
 ))
 Alert.displayName = 'Alert'
 

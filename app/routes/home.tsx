@@ -1,21 +1,15 @@
 /* eslint-disable react/function-component-definition */
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { useTranslation } from 'react-i18next'
-import {
-  ActionFunctionArgs,
-  Form,
-  Link,
-  redirect,
-  type MetaFunction,
-} from 'react-router'
-
-// import { Welcome } from "../welcome/welcome";
+import { Form, Link, Outlet, redirect, type MetaFunction } from 'react-router'
 
 import type { Route } from './+types/home'
 
+import { API_URL } from '~/constants/apiUrl'
 import { PAGE_URL } from '~/constants/pageUrl'
-import { getUserId, getAccessToken, logout } from '~/services/session.server'
+import { getUserId, getAccessToken } from '~/services/session.server'
 import { verifyToken } from '~/services/verify.token'
+import { Apis } from '~/utils/apis'
 
 export const meta: MetaFunction = () => {
   return [
@@ -30,41 +24,42 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
   if (!userId || !accessToken) {
     throw redirect(PAGE_URL.LOGIN)
   } else {
-    return { userId: userId, accessToken: accessToken }
+    const res = await Apis.getUserDetail(API_URL.USER_DETAIL, { email: userId })
+    return { accessToken: accessToken, user: res }
   }
-}
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const response = logout(request)
-  throw response
 }
 
 export default function Index({ loaderData }: Route.ComponentProps) {
   const { t } = useTranslation()
   const getJwt = () => async () => {
-    console.log('accessToken:', loaderData.accessToken)
-    const test = await verifyToken(loaderData.accessToken)
+    await verifyToken(loaderData.accessToken)
   }
+  const user = loaderData.user
   return (
     <div className="p-8">
       <h1 className="text-2xl">Welcome to React Router v7 Auth</h1>
       <div className="mt-6">
-        {loaderData?.userId ? (
+        {user ? (
           <div>
-            <p className="mb-6">You are logged in {loaderData?.userId}</p>
-            <Form action="/logout" method="post">
+            <p className="mb-4">You are logged in {user.email}</p>
+            <p className="mb-2">・ {user.email}</p>
+            <p className="mb-2">・ {user.name}</p>
+            <p className="mb-2">・ {user.phone_number}</p>
+            <p className="mb-2">・ {user['custom:role']}</p>
+            <Form action={PAGE_URL.LOGOUT} method="post">
               <button className="border rounded px-2.5 py-1" type="submit">
-                {t('logoutBtn')}
+                {t('content.logoutBtn')}
               </button>
             </Form>
             <button className="btn" onClick={getJwt()} type="button">
               토큰 확인
             </button>
-            <Form action="/refresh_token" method="post">
+            <Form action={PAGE_URL.REFRESH_TOKEN} method="post">
               <button className="border rounded px-2.5 py-1" type="submit">
-                {t('refreshTokenBtn')}
+                {t('content.refreshTokenBtn')}
               </button>
             </Form>
+            <Outlet />
           </div>
         ) : (
           <Link to={PAGE_URL.LOGIN}>Login</Link>

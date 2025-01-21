@@ -10,5 +10,5 @@ export enum API_URL {
   CONFIRM_FORGOT_PASSWORD = "/auth/confirm_forgot_password",
   CHANGE_PASSWORD = "/auth/change_password",
   NEW_TOKEN = "/auth/new_token",
-  USER_DETAIL = "/auth/user_details",
+  USER_DETAIL = "/auth/user_detail",
 }

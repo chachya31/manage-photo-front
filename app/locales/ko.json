@@ -27,6 +27,7 @@
     "signUpBtn": "회원가입",
     "signUpLink": "회원가입",
     "userName": "이름",
+    "verifyAccount": "메일 인증",
     "verifyAccountBtn": "인증 코드를 전송"
   }
 }

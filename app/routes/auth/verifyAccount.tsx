@@ -11,7 +11,7 @@ import {
   useNavigation,
 } from 'react-router'
 
-import type * as Route from './+types/verifyAccount'
+import type { Route } from './+types/verifyAccount'
 
 import { Input } from '~/components/ui/input'
 import { API_URL } from '~/constants/apiUrl'
@@ -54,13 +54,13 @@ export default function VerifyAccount({
   const ResendModal = (props: { open: boolean }) => {
     const properties = props
     return (
-      <dialog className='modal' id='my_modal_1' open={properties.open}>
-        <div className='modal-box'>
-          <h3 className='font-bold text-lg'>期限切れ！</h3>
-          <p className='py-4'>認証コードの有効期限が切れました。</p>
-          <div className='modal-action'>
-            <form method='dialog'>
-              <button className='btn' onClick={resendConfirmationCode()}>
+      <dialog className="modal" id="my_modal_1" open={properties.open}>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">期限切れ！</h3>
+          <p className="py-4">認証コードの有効期限が切れました。</p>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn" onClick={resendConfirmationCode()}>
                 再発行
               </button>
             </form>
@@ -92,19 +92,19 @@ export default function VerifyAccount({
   }
   // レンダリング
   return (
-    <div className='hero bg-base-200 max-h-screen'>
-      <div className='hero justify-items-center'>
-        <div className='card bg-base-100 w-full max-w-md shrink-0 shadow-2xl'>
-          <div className='hero-content'>
-            <h1 className='text-2xl font-bold'>
+    <div className="hero bg-base-200 max-h-screen">
+      <div className="hero justify-items-center">
+        <div className="card bg-base-100 w-full max-w-md shrink-0 shadow-2xl">
+          <div className="hero-content">
+            <h1 className="text-2xl font-bold">
               {t('pageTitle.verifyAccount')}
             </h1>
           </div>
 
-          <Form className='card-body' method='post' {...getFormProps(form)}>
-            <div className='form-control'>
-              <label className='label' htmlFor={fields.email.id}>
-                <span className='label-text'>{t('content.mailAddress')}</span>
+          <Form className="card-body" method="post" {...getFormProps(form)}>
+            <div className="form-control">
+              <label className="label" htmlFor={fields.email.id}>
+                <span className="label-text">{t('content.mailAddress')}</span>
               </label>
               <Input
                 {...getInputProps(fields.email, { type: 'email' })}
@@ -118,17 +118,17 @@ export default function VerifyAccount({
                 value={email}
               />
               {fields.email.errors && (
-                <div className='label'>
-                  <span className='label-text-alt text-error'>
+                <div className="label">
+                  <span className="label-text-alt text-error">
                     {fields.email.errors}
                   </span>
                 </div>
               )}
             </div>
 
-            <div className='form-control'>
-              <label className='label' htmlFor={fields.confirmation_code.id}>
-                <span className='label-text'>
+            <div className="form-control">
+              <label className="label" htmlFor={fields.confirmation_code.id}>
+                <span className="label-text">
                   {t('content.confirmationCode')}
                 </span>
               </label>
@@ -141,22 +141,22 @@ export default function VerifyAccount({
                 }`}
               />
               {fields.confirmation_code.errors && (
-                <div className='label'>
-                  <span className='label-text-alt text-error'>
+                <div className="label">
+                  <span className="label-text-alt text-error">
                     {fields.confirmation_code.errors}
                   </span>
                 </div>
               )}
             </div>
 
-            <div className='form-control mt-6 items-center'>
+            <div className="form-control mt-6 items-center">
               <button
-                className='btn btn-primary btn-wide'
+                className="btn btn-primary btn-wide"
                 disabled={isSubmitting()}
-                type='submit'
+                type="submit"
               >
                 {isSubmitting() ? (
-                  <span className='loading loading-spinner' />
+                  <span className="loading loading-spinner" />
                 ) : null}
                 {isSubmitting()
                   ? t('content.processing')
@@ -165,8 +165,8 @@ export default function VerifyAccount({
             </div>
 
             {actionData?.error ? (
-              <div className='flex flex-row'>
-                <p className='text-red-600 mt-4 '>{actionData?.error}</p>
+              <div className="flex flex-row">
+                <p className="text-red-600 mt-4 ">{actionData?.error}</p>
               </div>
             ) : null}
           </Form>

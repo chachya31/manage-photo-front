@@ -6,7 +6,7 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { useTranslation } from 'react-i18next'
 import { Form, type MetaFunction } from 'react-router'
 
-import type * as Route from './+types/confirmForgotPassword'
+import type { Route } from './+types/confirmForgotPassword'
 
 import { Input } from '~/components/ui/input'
 import { confirmForgotPasswordAction } from '~/state/auth/forgotPassword/confirm/action'

@@ -1,11 +1,13 @@
 import { type MetaFunction } from 'react-router'
 import { redirect } from 'react-router'
 
-import { logout } from '../services/session.server'
+import { getAccessToken, logout } from '../services/session.server'
 
-import type * as Route from './+types.logout'
+import type { Route } from './+types/logout'
 
+import { API_URL } from '~/constants/apiUrl'
 import { PAGE_URL } from '~/constants/pageUrl'
+import { Apis } from '~/utils/apis'
 
 export const meta: MetaFunction = () => {
   return [
@@ -15,6 +17,10 @@ export const meta: MetaFunction = () => {
 }
 
 export const action = async ({ request }: Route.ActionArgs) => {
+  const accessToken = await getAccessToken(request)
+  await Apis.post(API_URL.LOGOUT, {
+    access_token: accessToken,
+  })
   return logout(request)
 }
 

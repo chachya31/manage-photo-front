@@ -27,6 +27,7 @@
     "signUpBtn": "ユーザ登録",
     "signUpLink": "ユーザ登録するにはこちら",
     "userName": "ユーザ名",
+    "verifyAccount": "ユーザ認証",
     "verifyAccountBtn": "認証コードを送信"
   }
 }

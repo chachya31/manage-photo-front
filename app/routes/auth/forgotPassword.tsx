@@ -6,7 +6,7 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { useTranslation } from 'react-i18next'
 import { Form, Link, useNavigation, type MetaFunction } from 'react-router'
 
-import type * as Route from './+types/forgotPassword'
+import type { Route } from './+types/forgotPassword'
 
 import { Input } from '~/components/ui/input'
 import { PAGE_URL } from '~/constants/pageUrl'

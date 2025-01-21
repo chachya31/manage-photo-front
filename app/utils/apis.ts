@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 /* eslint-disable spellcheck/spell-checker */
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
+import { User } from "~/state/auth";
 
 const client = axios.create({
   baseURL: import.meta.env.VITE_API_URL + "/api/v1"
@@ -49,8 +50,23 @@ export const Apis = {
   get: async function (path: string, data: any, params?: any) {
     return await client.get(path, data)
       .then((res) => {
-        console.log(res.data)
-        return res
+        // console.log(res.data)
+        return res.data
+      })
+      .catch((error) => {
+        return error.response
+      })
+  },
+  // GET_USER_DETAIL
+  getUserDetail: async function (path: string, data: any, params?: any) {
+    return await client.get<User>(path, {
+      data: data,
+      params: params,
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    })
+      .then((res) => {
+        // console.log(res.data)
+        return res.data
       })
       .catch((error) => {
         return error.response
