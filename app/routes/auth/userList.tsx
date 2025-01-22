@@ -23,7 +23,7 @@ export default function UserList({ loaderData }: Route.ComponentProps) {
     <div>
       <Form method="get" role="search">
         <button className="btn btn-sm btn-outline" type="submit">
-          ユーザ一覧取得
+          {t('content.userListBtn')}
         </button>
       </Form>
       {userList ? (

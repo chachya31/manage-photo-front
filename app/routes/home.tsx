@@ -57,7 +57,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
                 onClick={getJwt()}
                 type="button"
               >
-                토큰 확인
+                {t('content.verifyTokenBtn')}
               </button>
               <Form action={PAGE_URL.REFRESH_TOKEN} method="post">
                 <button
