@@ -49,6 +49,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export function HydrateFallback() {
+  console.log("loading!")
   return (
     <div id="loading-splash">
       <div id="loading-splash-spinner" />
@@ -58,7 +59,13 @@ export function HydrateFallback() {
 }
 
 export default function App() {
-  return <Outlet />
+  const navigation = useNavigation()
+  const searching = navigation.location && new URLSearchParams(navigation.location.search)
+  return (
+    <div className={navigation.state === "loading" && !searching ? "loading loading-spinner text-neutral loading-lg" : ""}>
+      <Outlet />
+    </div>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

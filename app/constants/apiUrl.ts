@@ -11,4 +11,7 @@ export enum API_URL {
   CHANGE_PASSWORD = "/auth/change_password",
   NEW_TOKEN = "/auth/new_token",
   USER_DETAIL = "/auth/user_detail",
+
+  // Movieテスト
+  ADD_MOVIE = "/movie/add"
 }

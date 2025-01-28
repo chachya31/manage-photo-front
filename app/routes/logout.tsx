@@ -18,7 +18,7 @@ export const meta: MetaFunction = () => {
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const accessToken = await getAccessToken(request)
-  await Apis.post(API_URL.LOGOUT, {
+  await Apis.postToken(API_URL.LOGOUT, {
     access_token: accessToken,
   })
   return logout(request)

@@ -57,6 +57,23 @@ export const Apis = {
         return error.response
       })
   },
+  getWithToken: async function (path: string, data: any, accessToken: string, params?: any) {
+    return await client.get(path, {
+      data: data,
+      params: params,
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        'Authorization': `Bearer ${accessToken}`
+      },
+    })
+      .then((res) => {
+        // console.log(res.data)
+        return res.data
+      })
+      .catch((error) => {
+        return error.response
+      })
+  },
   // GET_USER_DETAIL
   getUserDetail: async function (path: string, data: any, params?: any) {
     return await client.get<User>(path, {
@@ -85,6 +102,19 @@ export const Apis = {
         return error.response
       })
   },
+  postToken: async function (path: string, data: any, params?: any) {
+    return await client.post(path, data, {
+      params: params,
+      headers: { 'Authorization': `Bearer ${data.access_token}` }
+    })
+      .then((res) => {
+        console.log(res.data)
+        return res
+      })
+      .catch((error) => {
+        return error.response
+      })
+  },
   // カスタムメソッドからのAPI通信は「aixos.postForm」を使用
   postForm: async function (path: string, data: any, params?: any) {
     return await client.postForm(path, data, {
@@ -100,4 +130,17 @@ export const Apis = {
         return error.response
       })
   },
+  // PUT
+  put: async function (path: string, data: any, accessToken: string) {
+    return await client.put(path, data, {
+      headers: { 'Authorization': `Bearer ${accessToken}` }
+    })
+      .then((res) => {
+        console.log(res.data)
+        return res
+      })
+      .catch((error) => {
+        return error.response
+      })
+  }
 }

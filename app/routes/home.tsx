@@ -67,6 +67,13 @@ export default function Index({ loaderData }: Route.ComponentProps) {
                   {t('content.refreshTokenBtn')}
                 </button>
               </Form>
+              <Link
+                to="movies/1987"
+              >
+                <button className="btn btn-outline" type="button">
+                  MovieList
+                </button>
+              </Link>
             </div>
             <Outlet />
           </div>

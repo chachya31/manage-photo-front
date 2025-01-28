@@ -43,6 +43,7 @@ export default function Login({
   const isSubmitting = () => {
     return navigation.formAction === PAGE_URL.LOGIN
   }
+
   const AlertDiv = (props: { text: string }) => {
     const properties = props
     return (
