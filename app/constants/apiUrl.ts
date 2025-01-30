@@ -13,5 +13,10 @@ export enum API_URL {
   USER_DETAIL = "/auth/user_detail",
 
   // Movieテスト
-  ADD_MOVIE = "/movie/add"
+  GET_MOVIE_LIST = "/movies/list",
+  QUERY_MOVIES = "/movies/query-movies",
+  DETAIL_MOVIE = "/movies/detail",
+  ADD_MOVIE = "/movies/add",
+  EDIT_MOVIE = "/movies/edit",
+  DELETE_MOVIE = "/movies/delete",
 }

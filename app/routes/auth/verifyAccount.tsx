@@ -59,7 +59,7 @@ export default function VerifyAccount({
           <h3 className="font-bold text-lg">期限切れ！</h3>
           <p className="py-4">認証コードの有効期限が切れました。</p>
           <div className="modal-action">
-            <form method="dialog">
+            <form id="resend-form" method="dialog">
               <button className="btn" onClick={resendConfirmationCode()}>
                 再発行
               </button>

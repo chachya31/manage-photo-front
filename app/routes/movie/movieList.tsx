@@ -28,7 +28,7 @@ export default function MovieList({ loaderData }: Route.ComponentProps) {
   const { movieList } = loaderData
   return (
     <div>
-      <Form method="get" role="search">
+      <Form id="movie-test-form" method="get" role="search">
         <button className="btn btn-sm btn-outline" type="submit">
           {t('content.userListBtn')}
         </button>

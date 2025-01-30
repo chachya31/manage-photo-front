@@ -57,7 +57,7 @@ export const Apis = {
         return error.response
       })
   },
-  getWithToken: async function (path: string, data: any, accessToken: string, params?: any) {
+  getWithToken: async function (path: string, accessToken: string,  data?: any, params?: any) {
     return await client.get(path, {
       data: data,
       params: params,

@@ -47,7 +47,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
             <p className="mb-2">・ {user.phone_number}</p>
             <p className="mb-2">・ {user['custom:role']}</p>
             <div className="mb-4 flex justify-normal">
-              <Form action={PAGE_URL.LOGOUT} method="post">
+              <Form action={PAGE_URL.LOGOUT} id="logout-form" method="post">
                 <button className="btn btn-primary btn-sm" type="submit">
                   {t('content.logoutBtn')}
                 </button>
@@ -59,7 +59,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
               >
                 {t('content.verifyTokenBtn')}
               </button>
-              <Form action={PAGE_URL.REFRESH_TOKEN} method="post">
+              <Form action={PAGE_URL.REFRESH_TOKEN} id="refresh-token-form" method="post">
                 <button
                   className="btn btn-accent btn-sm btn-outline"
                   type="submit"
@@ -68,7 +68,7 @@ export default function Index({ loaderData }: Route.ComponentProps) {
                 </button>
               </Form>
               <Link
-                to="movies/1987"
+                to="movies"
               >
                 <button className="btn btn-outline" type="button">
                   MovieList

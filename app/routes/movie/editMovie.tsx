@@ -3,20 +3,21 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react"
 import { getZodConstraint, parseWithZod } from "@conform-to/zod"
 import { useTranslation } from "react-i18next"
-import { ActionFunctionArgs, Form, Link, LoaderFunctionArgs, redirect, useNavigation } from "react-router"
+import { ActionFunctionArgs, Form, Link, redirect, useNavigation } from "react-router"
 import { z } from "zod"
 
-import type { Route } from './+types/createMovie'
+import type { Route } from './+types/editMovie'
 
 import { Input } from "~/components/ui/input"
 import { Rating } from "~/components/ui/rating"
+import { API_URL } from "~/constants/apiUrl"
 import { PAGE_URL } from "~/constants/pageUrl"
 import { getAccessToken, getUserId } from "~/services/session.server"
+import { Movie, ratingList } from "~/state/movie"
 import { Apis } from "~/utils/apis"
-import { API_URL } from "~/constants/apiUrl"
 
 
-export const createMovieSchema = () => {
+export const editMovieSchema = () => {
   return z
     .object({
       year: z.preprocess(
@@ -27,7 +28,8 @@ export const createMovieSchema = () => {
       title: z.preprocess(
         (value) => (value === '' ? undefined : value),
         z
-          .string({ required_error: "タイトルを入力してください。"})
+          .string({ required_error: "タイトルを入力してください。" },)
+        
       ),
       plot: z.preprocess(
         (value) => (value === '' ? undefined : value),
@@ -42,11 +44,22 @@ export const createMovieSchema = () => {
     })
 }
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: Route.LoaderArgs) => {
   const userId = await getUserId(request)
   const accessToken = await getAccessToken(request)
   if (!userId || !accessToken) {
     throw redirect(PAGE_URL.LOGIN)
+  } else {
+    const res: Movie | null = await Apis.getWithToken(API_URL.DETAIL_MOVIE, accessToken, {
+      year: params.year,
+      title: params.title,
+    })
+    if (!res) {
+      throw redirect(PAGE_URL.MOVIE_LIST)
+    } else {
+      console.log(res)
+      return { movie: res }
+    }
   }
 }
 
@@ -54,7 +67,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   let response: Response
   try {
     const accessToken = await getAccessToken(request)
-    const schema = createMovieSchema()
+    const schema = editMovieSchema()
     const formData = await request.formData()
     const submission = await parseWithZod(formData, { schema })
 
@@ -63,11 +76,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
     console.log(submission.payload)
 
-    const res = await Apis.put(API_URL.ADD_MOVIE, submission.payload, accessToken)
-    if (res.status !== 201) {
+    const res = await Apis.put(API_URL.EDIT_MOVIE, submission.payload, accessToken)
+    if (res.status !== 200) {
       throw new Error(`Failed: ${res.data.detail[0].msg}`)
     }
-    response = redirect("/movies/1987")
+    response = redirect(PAGE_URL.MOVIE_LIST)
   } catch (error) {
     if (error instanceof Error) {
       return { error: error.message }
@@ -78,10 +91,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   throw response
 }
 
-export default function CreateMovie({ actionData }: Route.ComponentProps) {
+export default function EditMovie({ loaderData, actionData }: Route.ComponentProps) {
   const { t } = useTranslation()
   const navigation = useNavigation()
-  const schema = createMovieSchema()
+  const schema = editMovieSchema()
+
+  const { movie } = loaderData
+
   const [form, fields] = useForm({
     constraint: getZodConstraint(schema),
     shouldValidate: 'onBlur',
@@ -89,7 +105,7 @@ export default function CreateMovie({ actionData }: Route.ComponentProps) {
     shouldRevalidate: 'onInput',
     onValidate: ({ formData }) => parseWithZod(formData, { schema }),
   })
-  const ratingList = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+
   
   const isSubmitting = () => {
     return navigation.formAction === PAGE_URL.SIGN_UP
@@ -100,7 +116,7 @@ export default function CreateMovie({ actionData }: Route.ComponentProps) {
       <div className="hero justify-items-center">
         <div className="card bg-base-100 w-full max-w-md shrink-0 shadow-2xl">
           <div className="hero-content">
-            <h1 className="text-2xl font-bold">映画登録</h1>
+            <h1 className="text-2xl font-bold">映画更新</h1>
           </div>
 
           <Form className="card-body" method="put" {...getFormProps(form)}>
@@ -115,7 +131,9 @@ export default function CreateMovie({ actionData }: Route.ComponentProps) {
                     ? 'input input-bordered input-error w-full'
                     : ''
                 }`}
+                defaultValue={movie.year}
                 key={fields.year.key}
+                readOnly
               />
               {fields.year.errors && (
                 <div className="label">
@@ -137,7 +155,9 @@ export default function CreateMovie({ actionData }: Route.ComponentProps) {
                     ? 'input input-bordered input-error w-full'
                     : ''
                 }`}
+                defaultValue={movie.title}
                 key={fields.title.key}
+                readOnly
               />
               {fields.title.errors && (
                 <div className="label">
@@ -159,6 +179,7 @@ export default function CreateMovie({ actionData }: Route.ComponentProps) {
                     ? 'input input-bordered input-error w-full'
                     : ''
                 }`}
+                defaultValue={movie.info.plot}
                 key={fields.plot.key}
               />
               {fields.plot.errors && (
@@ -184,7 +205,8 @@ export default function CreateMovie({ actionData }: Route.ComponentProps) {
                       ? "mask mask-heart mask-half-1 bg-red-400"
                       : "mask mask-heart mask-half-2 bg-red-400"
                     }
-                    key={`${fields.rating.key}:${score}`}
+                    defaultChecked={movie.info.rating === score}
+                    key={`${fields.rating.id}:${score}`}
                     value={score}
                   />
                 ))}
@@ -200,7 +222,7 @@ export default function CreateMovie({ actionData }: Route.ComponentProps) {
 
             <div className="flex mt-6 items-center justify-between">
               <button
-                className="btn btn-primary btn-wide"
+                className="btn btn-primary"
                 disabled={isSubmitting()}
                 type="submit"
               >
@@ -225,5 +247,4 @@ export default function CreateMovie({ actionData }: Route.ComponentProps) {
       </div>
     </div>
   )
-  
 }

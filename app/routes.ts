@@ -13,8 +13,8 @@ export default [
   route("/verify_account", "routes/auth/verifyAccount.tsx"),
   route("/refresh_token", "routes/auth/refreshToken.tsx"),
   layout("routes/movie/layout/sidebar.tsx", [
-    route("/movies/:year", "routes/movie/movieList.tsx"),
-    // route("/movies/:year/edit", "routes/movie/createMovie.tsx")
+    route("/movies", "routes/movie/movieList.tsx"),
+    route("/movies/:year/:title/edit", "routes/movie/editMovie.tsx")
   ]),
-  route("/movies/create", "routes/movie/createMovie.tsx")
+  route("/movies/add", "routes/movie/addMovie.tsx")
 ] satisfies RouteConfig;
